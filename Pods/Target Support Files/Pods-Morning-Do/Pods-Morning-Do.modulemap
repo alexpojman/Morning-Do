@@ -1,0 +1,6 @@
+framework module Pods_Morning_Do {
+  umbrella header "Pods-Morning-Do-umbrella.h"
+
+  export *
+  module * { export * }
+}

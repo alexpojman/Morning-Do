@@ -1,0 +1,16 @@
+PODS:
+  - Canvas (0.1.2)
+  - Firebase (2.5.0)
+  - RazzleDazzle (0.1.2)
+
+DEPENDENCIES:
+  - Canvas
+  - Firebase (>= 2.3.2)
+  - RazzleDazzle
+
+SPEC CHECKSUMS:
+  Canvas: eb861e3b555d032648146c8ffda1a5dea40059ca
+  Firebase: 744617c0733b45198f9486ebd5cac64ec2d10d79
+  RazzleDazzle: f3b6ec5595e57366192010e5ca7ffbb207639cee
+
+COCOAPODS: 0.39.0
