@@ -9,6 +9,7 @@
 import Foundation
 import RazzleDazzle
 import AudioToolbox
+import Firebase
 
 class IntroViewController: AnimatedPagingScrollViewController {
     //
@@ -30,6 +31,8 @@ class IntroViewController: AnimatedPagingScrollViewController {
     private let validationUsernameLabel =        UILabel()
     private let validationPasswordLabel =        UILabel()
     private let validationConfirmPasswordLabel = UILabel()
+    
+    private let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
     
     enum validationErrorType {
         case LoginIncorrect
@@ -61,9 +64,11 @@ class IntroViewController: AnimatedPagingScrollViewController {
         
         view.backgroundColor = UIColor(red: 242.0/255.0, green: 160.0/255.0, blue: 199.0/255.0, alpha: 1.0)
         
+        // TODO: change name for purpose of dismiss keyboard
         let tapRecognizer = UITapGestureRecognizer()
         tapRecognizer.addTarget(self, action: #selector(IntroViewController.didTapView))
         self.view.addGestureRecognizer(tapRecognizer)
+        
         
         configureViews()
         configureAnimations()
@@ -90,6 +95,7 @@ class IntroViewController: AnimatedPagingScrollViewController {
     
     // Add Views to Content View
     private func configureViews() {
+        activityIndicator.center = view.center
         // Determines the "Order" of the views (first is in the back)
         contentView.addSubview(iphone)
         contentView.addSubview(label)
@@ -105,6 +111,7 @@ class IntroViewController: AnimatedPagingScrollViewController {
         contentView.addSubview(validationUsernameLabel)
         contentView.addSubview(validationPasswordLabel)
         contentView.addSubview(validationConfirmPasswordLabel)
+        contentView.addSubview(activityIndicator)
     }
     
     // Configure Animation and Properties for Added Subviews
@@ -279,7 +286,7 @@ class IntroViewController: AnimatedPagingScrollViewController {
         let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         
         if (emailTest.evaluateWithObject(email) == false) {
-            
+            showValidationError(.EmailNotValid)
         }
         
         return emailTest.evaluateWithObject(email)
@@ -305,8 +312,10 @@ class IntroViewController: AnimatedPagingScrollViewController {
     // MARK: Login/Register Methods
     //
     func tryLogin(sender:UIButton) {
+        activityIndicator.startAnimating()
         ref.authUser(usernameTextField.text, password: passwordTextField.text,
                      withCompletionBlock: { error, authData in
+                        self.activityIndicator.stopAnimating()
                         if error != nil {
                             // There was an error logging in to this account
                             print("Login failed")
@@ -324,13 +333,27 @@ class IntroViewController: AnimatedPagingScrollViewController {
         // Validate Stuff
         let validEmail = validateEmail(usernameTextField.text!)
         let validPassword = validatePasswordForRegister(passwordTextField.text!, passwordConfirm: confirmPasswordTextField.text!)
-        
-        if(validEmail == true && validPassword == true) {
+        if (validEmail == true && validPassword) {
+            
             ref.createUser(usernameTextField.text, password: passwordTextField.text,
                            withValueCompletionBlock: { error, result in
                             
                             if error != nil {
-                                print("Register User Failed")
+                                
+                                if let errorCode = FAuthenticationError(rawValue: error.code) {
+                                    switch (errorCode) {
+                                    case .EmailTaken:
+                                        self.showValidationError(.UsernameTaken)
+                                    case .InvalidEmail:
+                                        print("Handle invalid email")
+                                    case .InvalidPassword:
+                                        print("Handle invalid password")
+                                    case .NetworkError:
+                                        self.showValidationError(.NoInternetConnection)
+                                    default:
+                                        print(errorCode)
+                                    }
+                                }
                             } else {
                                 let uid = result["uid"] as? String
                                 print("Successfully created user account with uid: \(uid)")
@@ -429,7 +452,7 @@ class IntroViewController: AnimatedPagingScrollViewController {
                 self.resetPasswordButton.removeTarget(self, action: #selector(self.cancelResetPassword(_:)), forControlEvents: .TouchUpInside)
                 self.resetPasswordButton.addTarget(self, action: #selector(self.resetPasswordTapped(_:)), forControlEvents: .TouchUpInside)
                 
-                // Propt user to change password after logging in
+                // Prompt user to change password after logging in
             }
         })
     }
@@ -450,7 +473,6 @@ class IntroViewController: AnimatedPagingScrollViewController {
     //
     
     func showValidationError(error: validationErrorType) {
-        resetValidationLabels()
         
         switch error {
         case .LoginIncorrect:
@@ -480,13 +502,25 @@ class IntroViewController: AnimatedPagingScrollViewController {
             })
             break
         case .UsernameTaken:
+            self.usernameTextField.shake(true)
+            validationUsernameLabel.text = "Email Already Taken"
+            validationUsernameLabel.fadeIn(0.5, delay: 0.0, completion: {(finished: Bool) -> Void in
+                self.validationUsernameLabel.fadeOut(0.75, delay: 2.5)
+            })
             break
         case .EmailNotValid:
+            self.usernameTextField.shake(true)
+            validationUsernameLabel.text = "Not A Valid Email"
+            validationUsernameLabel.fadeIn(0.5, delay: 0.0, completion: {(finished: Bool) -> Void in
+                self.validationUsernameLabel.fadeOut(0.75, delay: 2.5)
+            })
             break
         case .NoInternetConnection:
+            print ("No network available")
             break
         case .PasswordResetFailed:
             break
+            
         default:
             break
         }

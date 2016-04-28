@@ -234,7 +234,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xWG-Bw-Wqy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1042" y="2742"/>
+            <point key="canvasLocation" x="1733" y="2039"/>
         </scene>
         <!--BadgeUI Collection View Controller-->
         <scene sceneID="qNW-9X-HL9">
@@ -295,7 +295,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d5D-6z-mqp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1724" y="3177"/>
+            <point key="canvasLocation" x="1349" y="3096"/>
         </scene>
         <!--Intro View Controller-->
         <scene sceneID="agF-dC-XE3">
@@ -316,7 +316,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6cY-H9-LMD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="346" y="1317"/>
+            <point key="canvasLocation" x="1733" y="543"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="O36-RO-NmT">
@@ -393,7 +393,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lBF-kX-FNt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1724" y="2520"/>
+            <point key="canvasLocation" x="2113" y="3096"/>
         </scene>
     </scenes>
     <resources>

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class LandingPageViewController : UIViewController {
     let ref = Firebase(url: "https://morning-do.firebaseio.com")
